@@ -121,61 +121,473 @@ input,select,textarea{background:var(--panel)!important;color:var(--text)!import
 <div class="modal" id="staffModal"><div class="dialog"><div class="dialoghead"><h3>Create Staff Admin</h3><button class="close" onclick="staffModal.classList.remove('active')">×</button></div><form id="staffForm" class="editor" onsubmit="return saveStaff(event)">
 <div class="ef"><label>Name *</label><input name="name" required></div><div class="ef"><label>Mobile *</label><input name="mobile" required></div><div class="ef"><label>Email</label><input name="email" type="email"></div><div class="ef"><label>Ward</label><input name="ward"></div><div class="ef full"><label>Address</label><textarea name="address"></textarea></div><div class="ef"><label>Initial Password *</label><input name="password" type="password" minlength="6" required></div><button class="save">Create Admin</button></form></div></div>
 <script>
-const API='https://script.google.com/macros/s/AKfycbzrDLNOj56LEjyLuf4PJiBsH5s36RgRi6y55NjjVJtxvRjFPUMdcXLsOK4ojNUssdNX/exec';let token='',section='',rows=[],editing=null;
-const SECTIONS=[['businesses','🏪','Businesses'],['services','🛠️','Local Services'],['healthcare','🏥','Healthcare'],['doctors','👨‍⚕️','Doctors'],['education','🎓','Education'],['transport','🚌','Transport'],['places','📍','Important Places'],['governmentOffices','🏛️','Government Offices'],['events','📅','Events'],['notifications','🔔','Notifications'],['representatives','👥','Representatives'],['cityConnect','💬','City Connect'],['changeMakers','✨','Change Makers'],['contacts','✉️','Messages'],['agriculture','🌾','Agriculture'],['usefulLinks','🌐','Useful Links'],['governmentServices','🏢','Government Services'],['importantContacts','☎️','Important Contacts'],['pathology','🧪','Pathology'],['medicineOrders','💊','Medicine Orders'],['jobs','💼','Jobs'],['users','👤','App Users'],['localAds','📣','Local Ads'],['settings','⚙️','Settings'],['emergency','🚨','Emergency'],['adminNotifications','🔔','Request Notifications']];
-function post(p){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p)}).then(r=>r.text()).then(t=>{let x;try{x=JSON.parse(t)}catch(e){throw Error('Invalid server response')}if(!x||x.success!==true)throw Error(x&&x.error?x.error:'Request failed');return x})}
-function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function login(){status.textContent='Checking...';post({action:'adminLogin',user:user.value.trim(),password:pw.value}).then(r=>{token=r.data.token;loginBox.style.display='none';dash.style.display='block';modules.innerHTML=SECTIONS.map(s=>`<div class="module" onclick="openSection('${s[0]}')"><i>${s[1]}</i><b>${s[2]}</b></div>`).join('')}).catch(e=>status.textContent=e.message)}
-function logout(){token='';location.reload()}function showModules(){panel.classList.remove('active');modules.style.display='grid';section=''}
-function openSection(s){section=s;modules.style.display='none';panel.classList.add('active');panelTitle.textContent=(SECTIONS.find(x=>x[0]===s)||['','','Management'])[2];content.className='empty';content.textContent='Loading...';post({action:'adminData',section:s,token}).then(r=>{rows=Array.isArray(r.data)?r.data:[];render()}).catch(e=>content.textContent=e.message)}
-function idOf(r){return r.ID||r['User ID']||r.id||''}function render(){if(!rows.length){content.className='empty';content.textContent='No records found.';return}const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(c=>!String(c).startsWith('_'));let h='<div class="tablewrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'<th>Actions</th></tr></thead><tbody>';rows.forEach((r,i)=>{h+='<tr>'+cols.map(c=>'<td title="'+esc(r[c])+'">'+esc(r[c])+'</td>').join('')+'<td><div class="rowbtns"><button style="background:#eaf7ed;color:#176b35" onclick="openEditor('+i+')">Edit</button><button style="background:#fff1f1;color:#b91c1c" onclick="removeRow('+i+')">Delete</button></div></td></tr>'});h+='</tbody></table></div>';content.className='';content.innerHTML=h}
-function openEditor(i){editing=i===null?null:rows[i];const obj=editing||rows[0]||{};const cols=Object.keys(obj).filter(c=>!String(c).startsWith('_')&&!['Password Salt','Password Hash'].includes(c));editorTitle.textContent=editing?'Edit Record':'Add Record';editorForm.innerHTML=cols.map(c=>{const v=editing?editing[c]:'';const full=/description|message|details|address/i.test(c);return `<div class="ef ${full?'full':''}"><label>${esc(c)}</label>${full?`<textarea name="${esc(c)}">${esc(v)}</textarea>`:`<input name="${esc(c)}" value="${esc(v)}">`}</div>`}).join('')+'<button class="save">Save</button>';editorModal.classList.add('active')}
-async function saveEditor(e){e.preventDefault();const ok=await askConfirm(editing?'Save Changes':'Add Record',editing?'Save the changes to this record?':'Add this new record?','Confirm');if(!ok)return false;const data={};new FormData(editorForm).forEach((v,k)=>data[k]=v);post({action:'adminSave',section,operation:editing?'edit':'add',id:editing?idOf(editing):'',data,token}).then(()=>{editorModal.classList.remove('active');openSection(section)}).catch(e=>alert(e.message));return false}
-async function removeRow(i){
- const ok=await askConfirm('Delete Record','This will permanently delete the selected record. This action cannot be undone.','Delete');
- if(!ok)return;
- post({action:'adminUpdate',section,operation:'delete',id:idOf(rows[i]),token}).then(()=>openSection(section)).catch(e=>alert(e.message))
-}
-function createStaff(){staffForm.reset();staffModal.classList.add('active')}async function saveStaff(e){e.preventDefault();const ok=await askConfirm('Create Staff Admin','Create this staff admin account with the entered details?','Create Admin');if(!ok)return false;const d={action:'superAdminCreateStaff',token};new FormData(staffForm).forEach((v,k)=>d[k]=v);post(d).then(r=>{staffModal.classList.remove('active');alert(r.data.message)}).catch(e=>alert(e.message));return false}
-function loadStaff(){modules.style.display='none';panel.classList.add('active');panelTitle.textContent='Staff Admins';post({action:'superAdminListStaff',token}).then(r=>{rows=r.data||[];if(!rows.length){content.className='empty';content.textContent='No staff admins found.';return}let h='<div class="tablewrap"><table><thead><tr><th>Name</th><th>Mobile</th><th>Email</th><th>Ward</th><th>Status</th><th>Action</th></tr></thead><tbody>';rows.forEach((a,i)=>{h+=`<tr><td>${esc(a.name)}</td><td>${esc(a.mobile)}</td><td>${esc(a.email)}</td><td>${esc(a.ward)}</td><td>${esc(a.status)}</td><td><button onclick="toggleStaff(${i})">${a.status==='Active'?'Disable':'Enable'}</button></td></tr>`});h+='</tbody></table></div>';content.className='';content.innerHTML=h}).catch(e=>content.textContent=e.message)}
-async function toggleStaff(i){const a=rows[i],status=a.status==='Active'?'Disabled':'Active';const ok=await askConfirm(status+' Admin',status+' '+a.name+'?','Confirm');if(!ok)return;post({action:'superAdminSetStaffStatus',token,id:a.id,status}).then(loadStaff).catch(e=>alert(e.message))}
 
+const API='https://script.google.com/macros/s/AKfycbzrDLNOj56LEjyLuf4PJiBsH5s36RgRi6y55NjjVJtxvRjFPUMdcXLsOK4ojNUssdNX/exec';
+const TOKEN_KEY='scSuperAdminToken';
+
+let token=localStorage.getItem(TOKEN_KEY)||'';
+let section='';
+let rows=[];
+let editing=null;
+let scConfirmResolve=null;
+let superNotifications=[];
+
+const SECTIONS=[
+ ['businesses','🏪','Businesses'],
+ ['services','🛠️','Local Services'],
+ ['healthcare','🏥','Healthcare'],
+ ['doctors','👨‍⚕️','Doctors'],
+ ['education','🎓','Education'],
+ ['transport','🚌','Transport'],
+ ['places','📍','Important Places'],
+ ['governmentOffices','🏛️','Government Offices'],
+ ['events','📅','Events'],
+ ['notifications','🔔','Notifications'],
+ ['representatives','👥','Representatives'],
+ ['cityConnect','💬','City Connect'],
+ ['changeMakers','✨','Change Makers'],
+ ['contacts','✉️','Messages'],
+ ['agriculture','🌾','Agriculture'],
+ ['usefulLinks','🌐','Useful Links'],
+ ['governmentServices','🏢','Government Services'],
+ ['importantContacts','☎️','Important Contacts'],
+ ['pathology','🧪','Pathology'],
+ ['medicineOrders','💊','Medicine Orders'],
+ ['jobs','💼','Jobs'],
+ ['users','👤','App Users'],
+ ['localAds','📣','Local Ads'],
+ ['settings','⚙️','Settings'],
+ ['emergency','🚨','Emergency'],
+ ['adminNotifications','🔔','Request Notifications']
+];
+
+function post(payload){
+ return fetch(API,{
+   method:'POST',
+   headers:{'Content-Type':'text/plain;charset=utf-8'},
+   body:JSON.stringify(payload)
+ }).then(r=>r.text()).then(t=>{
+   let x;
+   try{x=JSON.parse(t)}catch(e){throw Error('Invalid server response')}
+   if(!x||x.success!==true)throw Error(x&&x.error?x.error:'Request failed');
+   return x;
+ });
+}
+
+function esc(v){
+ return String(v??'').replace(/[&<>"']/g,m=>({
+   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[m]));
+}
+
+function moduleCards(){
+ modules.innerHTML=SECTIONS.map(s=>
+   `<div class="module" onclick="openSection('${s[0]}')"><i>${s[1]}</i><b>${s[2]}</b></div>`
+ ).join('');
+}
+
+function showDashboard(){
+ loginBox.style.display='none';
+ dash.style.display='block';
+ moduleCards();
+ checkSuperNotifications();
+ if(!window.scNotificationTimer){
+   window.scNotificationTimer=setInterval(checkSuperNotifications,60000);
+ }
+}
+
+function login(){
+ const u=user.value.trim(), p=pw.value;
+ if(!u||!p){
+   status.textContent='Enter Admin ID and password.';
+   return;
+ }
+ status.textContent='Checking...';
+ post({action:'adminLogin',user:u,password:p})
+ .then(r=>{
+   token=r.data&&r.data.token?r.data.token:'';
+   if(!token)throw Error('No admin session received.');
+   localStorage.setItem(TOKEN_KEY,token);
+   pw.value='';
+   status.textContent='';
+   showDashboard();
+ })
+ .catch(e=>{
+   token='';
+   localStorage.removeItem(TOKEN_KEY);
+   status.textContent=e.message;
+ });
+}
+
+function restoreSession(){
+ applyTheme();
+ if(!token)return;
+ // Validate the stored token against a protected admin endpoint.
+ post({action:'adminData',section:'adminNotifications',token})
+ .then(()=>{
+   showDashboard();
+ })
+ .catch(()=>{
+   token='';
+   localStorage.removeItem(TOKEN_KEY);
+   loginBox.style.display='block';
+   dash.style.display='none';
+ });
+}
+
+function logout(){
+ token='';
+ localStorage.removeItem(TOKEN_KEY);
+ location.reload();
+}
+
+function showModules(){
+ panel.classList.remove('active');
+ modules.style.display='grid';
+ section='';
+}
+
+function openSection(s){
+ if(!token)return;
+ section=s;
+ modules.style.display='none';
+ panel.classList.add('active');
+ panelTitle.textContent=(SECTIONS.find(x=>x[0]===s)||['','','Management'])[2];
+ content.className='empty';
+ content.textContent='Loading...';
+ post({action:'adminData',section:s,token})
+ .then(r=>{
+   rows=Array.isArray(r.data)?r.data:[];
+   render();
+ })
+ .catch(handleSessionError);
+}
+
+function handleSessionError(e){
+ const msg=String(e&&e.message||'');
+ if(/session|token|login|expired|unauthor/i.test(msg)){
+   token='';
+   localStorage.removeItem(TOKEN_KEY);
+   alert('Your Super Admin session has expired. Please login again.');
+   location.reload();
+ }else{
+   content.className='empty';
+   content.textContent=msg||'Unable to load data.';
+ }
+}
+
+function idOf(r){
+ return r.ID||r['User ID']||r.id||r.Key||r.KEY||'';
+}
+
+function render(){
+ if(!rows.length){
+   content.className='empty';
+   content.textContent='No records found.';
+   return;
+ }
+ const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(c=>!String(c).startsWith('_'));
+ let h='<div class="tablewrap"><table><thead><tr>'+
+   cols.map(c=>'<th>'+esc(c)+'</th>').join('')+
+   '<th>Actions</th></tr></thead><tbody>';
+
+ rows.forEach((r,i)=>{
+   h+='<tr>'+
+     cols.map(c=>'<td title="'+esc(r[c])+'">'+esc(r[c])+'</td>').join('')+
+     '<td><div class="rowbtns">'+
+     '<button style="background:#eaf7ed;color:#176b35" onclick="openEditor('+i+')">Edit</button>'+
+     '<button style="background:#fff1f1;color:#b91c1c" onclick="removeRow('+i+')">Delete</button>'+
+     '</div></td></tr>';
+ });
+ h+='</tbody></table></div>';
+ content.className='';
+ content.innerHTML=h;
+}
+
+function openEditor(i){
+ editing=i===null?null:rows[i];
+ const obj=editing||rows[0]||{};
+ const cols=Object.keys(obj).filter(c=>
+   !String(c).startsWith('_') &&
+   !['Password Salt','Password Hash'].includes(c)
+ );
+ editorTitle.textContent=editing?'Edit Record':'Add Record';
+ editorForm.innerHTML=cols.map(c=>{
+   const v=editing?editing[c]:'';
+   const full=/description|message|details|address/i.test(c);
+   return `<div class="ef ${full?'full':''}">
+     <label>${esc(c)}</label>
+     ${full
+       ? `<textarea name="${esc(c)}">${esc(v)}</textarea>`
+       : `<input name="${esc(c)}" value="${esc(v)}">`}
+   </div>`;
+ }).join('')+'<button class="save">Save</button>';
+ editorModal.classList.add('active');
+}
+
+async function saveEditor(e){
+ e.preventDefault();
+ const ok=await askConfirm(
+   editing?'Save Changes':'Add Record',
+   editing?'Save the changes to this record?':'Add this new record?',
+   editing?'Save Changes':'Add Record'
+ );
+ if(!ok)return false;
+
+ const data={};
+ new FormData(editorForm).forEach((v,k)=>data[k]=v);
+
+ post({
+   action:'adminSave',
+   section,
+   operation:editing?'edit':'add',
+   id:editing?idOf(editing):'',
+   data,
+   token
+ })
+ .then(()=>{
+   editorModal.classList.remove('active');
+   openSection(section);
+ })
+ .catch(e=>alert(e.message));
+
+ return false;
+}
+
+async function removeRow(i){
+ const ok=await askConfirm(
+   'Delete Record',
+   'This will permanently delete the selected record. This action cannot be undone.',
+   'Delete'
+ );
+ if(!ok)return;
+
+ post({
+   action:'adminUpdate',
+   section,
+   operation:'delete',
+   id:idOf(rows[i]),
+   token
+ })
+ .then(()=>openSection(section))
+ .catch(e=>alert(e.message));
+}
+
+function createStaff(){
+ staffForm.reset();
+ staffModal.classList.add('active');
+}
+
+async function saveStaff(e){
+ e.preventDefault();
+ const ok=await askConfirm(
+   'Create Staff Admin',
+   'Create this staff admin account with the entered details?',
+   'Create Admin'
+ );
+ if(!ok)return false;
+
+ const d={action:'superAdminCreateStaff',token};
+ new FormData(staffForm).forEach((v,k)=>d[k]=v);
+
+ post(d)
+ .then(r=>{
+   staffModal.classList.remove('active');
+   alert(r.data.message);
+   checkSuperNotifications();
+ })
+ .catch(e=>alert(e.message));
+
+ return false;
+}
+
+function loadStaff(){
+ modules.style.display='none';
+ panel.classList.add('active');
+ panelTitle.textContent='Staff Admins';
+ content.className='empty';
+ content.textContent='Loading...';
+
+ post({action:'superAdminListStaff',token})
+ .then(r=>{
+   rows=r.data||[];
+   if(!rows.length){
+     content.className='empty';
+     content.textContent='No staff admins found.';
+     return;
+   }
+
+   let h='<div class="tablewrap"><table><thead><tr>'+
+     '<th>Name</th><th>Mobile</th><th>Email</th><th>Ward</th><th>Status</th><th>Action</th>'+
+     '</tr></thead><tbody>';
+
+   rows.forEach((a,i)=>{
+     h+=`<tr>
+       <td>${esc(a.name)}</td>
+       <td>${esc(a.mobile)}</td>
+       <td>${esc(a.email)}</td>
+       <td>${esc(a.ward)}</td>
+       <td>${esc(a.status)}</td>
+       <td><button onclick="toggleStaff(${i})">${a.status==='Active'?'Disable':'Enable'}</button></td>
+     </tr>`;
+   });
+
+   h+='</tbody></table></div>';
+   content.className='';
+   content.innerHTML=h;
+ })
+ .catch(handleSessionError);
+}
+
+async function toggleStaff(i){
+ const a=rows[i];
+ const nextStatus=a.status==='Active'?'Disabled':'Active';
+ const ok=await askConfirm(
+   nextStatus+' Admin',
+   nextStatus+' '+a.name+'?',
+   nextStatus
+ );
+ if(!ok)return;
+
+ post({
+   action:'superAdminSetStaffStatus',
+   token,
+   id:a.id,
+   status:nextStatus
+ })
+ .then(loadStaff)
+ .catch(e=>alert(e.message));
+}
+
+/* Theme */
 function applyTheme(){
-  const th=localStorage.getItem('scSuperTheme')||'light';
-  document.documentElement.classList.toggle('dark',th==='dark');
-  const b=document.getElementById('themeBtn');
-  if(b)b.textContent=th==='dark'?'☀️ Light':'🌙 Dark';
+ const th=localStorage.getItem('scSuperTheme')||'light';
+ document.documentElement.classList.toggle('dark',th==='dark');
+ const b=document.getElementById('themeBtn');
+ if(b)b.textContent=th==='dark'?'☀️ Light':'🌙 Dark';
 }
 function toggleTheme(){
-  const th=localStorage.getItem('scSuperTheme')||'light';
-  localStorage.setItem('scSuperTheme',th==='dark'?'light':'dark');
-  applyTheme();
-}
-function togglePasswordBox(){
-  pwBox.classList.toggle('active');
-}
-function togglePw(id,b){
-  const e=document.getElementById(id),show=e.type==='password';
-  e.type=show?'text':'password';
-  b.textContent=show?'Hide':'Show';
-}
-function changeSuperPassword(){
-  if(!token){alert('Please login first.');return}
-  if(!currentPassword.value||!newPassword.value||!confirmPassword.value){
-    alert('Complete all password fields.');return;
-  }
-  if(newPassword.value.length<6){alert('New password must contain at least 6 characters.');return}
-  if(newPassword.value!==confirmPassword.value){alert('New passwords do not match.');return}
-  askConfirm('Change Password','Change the Super Admin password?','Change Password').then(function(ok){
-    if(!ok)return;
-    post({action:'adminChangePassword',token,currentPassword:currentPassword.value,newPassword:newPassword.value})
-    .then(r=>{
-      currentPassword.value='';newPassword.value='';confirmPassword.value='';
-      pwBox.classList.remove('active');
-      alert((r.data&&r.data.message)||'Password updated successfully.');
-    })
-    .catch(e=>alert(e.message));
+ const th=localStorage.getItem('scSuperTheme')||'light';
+ localStorage.setItem('scSuperTheme',th==='dark'?'light':'dark');
+ applyTheme();
 }
 
-document.addEventListener('DOMContentLoaded',applyTheme);
+/* Password */
+function togglePasswordBox(){
+ pwBox.classList.toggle('active');
+}
+function togglePw(id,b){
+ const e=document.getElementById(id);
+ const show=e.type==='password';
+ e.type=show?'text':'password';
+ b.textContent=show?'Hide':'Show';
+}
+async function changeSuperPassword(){
+ if(!token){alert('Please login first.');return}
+ if(!currentPassword.value||!newPassword.value||!confirmPassword.value){
+   alert('Complete all password fields.');
+   return;
+ }
+ if(newPassword.value.length<6){
+   alert('New password must contain at least 6 characters.');
+   return;
+ }
+ if(newPassword.value!==confirmPassword.value){
+   alert('New passwords do not match.');
+   return;
+ }
+
+ const ok=await askConfirm(
+   'Change Password',
+   'Change the Super Admin password?',
+   'Change Password'
+ );
+ if(!ok)return;
+
+ post({
+   action:'adminChangePassword',
+   token,
+   currentPassword:currentPassword.value,
+   newPassword:newPassword.value
+ })
+ .then(r=>{
+   currentPassword.value='';
+   newPassword.value='';
+   confirmPassword.value='';
+   pwBox.classList.remove('active');
+   alert((r.data&&r.data.message)||'Password updated successfully.');
+ })
+ .catch(e=>alert(e.message));
+}
+
+/* Confirmation */
+function askConfirm(title,text,buttonText){
+ confirmTitle.textContent=title||'Confirm Action';
+ confirmText.textContent=text||'Are you sure?';
+ confirmYes.textContent=buttonText||'Confirm';
+ confirmModal.classList.add('active');
+ return new Promise(resolve=>{scConfirmResolve=resolve});
+}
+function resolveConfirm(value){
+ confirmModal.classList.remove('active');
+ if(scConfirmResolve){
+   const r=scConfirmResolve;
+   scConfirmResolve=null;
+   r(value);
+ }
+}
+
+/* Private Super Admin notifications */
+function notificationKey(n){
+ return 'scSuperSeen:'+String(
+   n.ID||n.id||n.Title||n['Request ID']||JSON.stringify(n)
+ );
+}
+function renderSuperBell(){
+ const unseen=superNotifications.some(n=>!localStorage.getItem(notificationKey(n)));
+ const dot=document.getElementById('superBellDot');
+ if(dot)dot.style.display=unseen?'block':'none';
+}
+async function checkSuperNotifications(){
+ if(!token)return;
+ try{
+   const r=await post({
+     action:'adminData',
+     section:'adminNotifications',
+     token
+   });
+   superNotifications=Array.isArray(r.data)?r.data:[];
+   renderSuperBell();
+ }catch(e){
+   // Do not force logout just because notification polling fails.
+ }
+}
+function openSuperNotifications(){
+ if(!token)return;
+ notificationModal.classList.add('active');
+ const box=document.getElementById('notificationList');
+
+ if(!superNotifications.length){
+   box.className='empty';
+   box.textContent='No new requests or administrative updates.';
+ }else{
+   box.className='';
+   box.innerHTML=superNotifications.slice().reverse().map(n=>{
+     const title=n.Title||n['Request Type']||'Update';
+     const msg=n.Message||n['Request ID']||'New administrative update';
+     const date=n['Created At']||'';
+     return `<div style="padding:11px;border-bottom:1px solid var(--border)">
+       <b style="font-size:10px">${esc(title)}</b>
+       <div style="font-size:8px;color:var(--muted);margin-top:4px">${esc(msg)}</div>
+       ${date?`<div style="font-size:7px;color:var(--muted);margin-top:3px">${esc(date)}</div>`:''}
+     </div>`;
+   }).join('');
+ }
+
+ superNotifications.forEach(n=>localStorage.setItem(notificationKey(n),'1'));
+ renderSuperBell();
+}
+
+document.addEventListener('DOMContentLoaded',restoreSession);
+
 </script></body></html>
