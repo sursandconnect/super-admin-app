@@ -1,14 +1,8 @@
-SURSAND CONNECT SUPER ADMIN APP v2
+Sursand Connect Super Admin v2.1
 
-Changes:
-- Light theme is now the default.
-- Added Light/Dark theme toggle in the top toolbar.
-- Theme preference is saved on the device.
-- Added Super Admin password-change panel.
-- Password fields include Show/Hide controls.
-- Module cards are now colorful 3D cards with white icon tiles.
-- Existing full Super Admin controls and staff-admin creation remain unchanged.
-
-Backend:
-Uses the existing adminChangePassword action already available in the Sursand Connect backend.
-No new Apps Script setup is required for this visual/password update.
+- Beautiful confirmation popup before Add, Edit, Delete, Staff Admin creation, Staff Admin enable/disable, and Super Admin password change.
+- Super Admin notification bell added.
+- Red dot appears for unseen private request/admin notifications.
+- Opening the notification panel marks the displayed notifications as seen on that device.
+- The app checks for new admin notifications after login and once per minute while open.
+- Existing light/dark themes and multicolour 3D module cards remain.

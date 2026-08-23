@@ -89,7 +89,7 @@ input,select,textarea{background:var(--panel)!important;color:var(--text)!import
 <section class="top"><h1>🛡️ Sursand Connect Super Admin</h1><p>Owner-only control centre with complete access to Sursand Connect data, modules, staff admins, requests, settings and public content.</p></section>
 <section class="login" id="loginBox"><h2 style="margin:0;font-size:16px">Super Admin Login</h2><div class="field"><label>Admin ID</label><input id="user"></div><div class="field"><label>Password</label><input id="pw" type="password"></div><button class="btn" onclick="login()">Login</button><div id="status" style="font-size:9px;margin-top:8px"></div></section>
 <section class="dash" id="dash">
-<div class="toolbar"><h2>Owner Control Centre</h2><div class="tools"><button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button><button class="small light" onclick="togglePasswordBox()">🔑 Change Password</button><button class="small green" onclick="createStaff()">＋ Create Admin</button><button class="small light" onclick="loadStaff()">👥 Staff Admins</button><button class="small red" onclick="logout()">Logout</button></div></div>
+<div class="toolbar"><h2>Owner Control Centre</h2><div class="tools"><button class="theme-toggle" id="superBell" onclick="openSuperNotifications()" title="Notifications" style="position:relative">🔔<span id="superBellDot" style="display:none;position:absolute;right:5px;top:4px;width:7px;height:7px;border-radius:50%;background:#dc2626;border:1px solid #fff"></span></button><button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button><button class="small light" onclick="togglePasswordBox()">🔑 Change Password</button><button class="small green" onclick="createStaff()">＋ Create Admin</button><button class="small light" onclick="loadStaff()">👥 Staff Admins</button><button class="small red" onclick="logout()">Logout</button></div></div>
 <div class="pwbox" id="pwBox">
 <div class="pwgrid">
 <div class="pw"><input id="currentPassword" type="password" placeholder="Current password"><button type="button" onclick="togglePw('currentPassword',this)">Show</button></div>
@@ -102,6 +102,21 @@ input,select,textarea{background:var(--panel)!important;color:var(--text)!import
 <section class="panel" id="panel"><div class="panelhead"><h3 id="panelTitle">Management</h3><div class="tools"><button class="small green" onclick="openEditor(null)">＋ Add</button><button class="small light" onclick="showModules()">← Modules</button></div></div><div id="content" class="empty">Select a module.</div></section>
 </section>
 </main>
+
+
+<div class="modal" id="confirmModal"><div class="dialog" style="max-width:420px">
+<div class="dialoghead"><h3 id="confirmTitle">Confirm Action</h3><button class="close" onclick="resolveConfirm(false)">×</button></div>
+<p id="confirmText" style="font-size:10px;line-height:1.6;color:var(--muted)">Are you sure?</p>
+<div style="display:flex;gap:8px;justify-content:flex-end">
+<button class="small light" onclick="resolveConfirm(false)">Cancel</button>
+<button class="small red" id="confirmYes" onclick="resolveConfirm(true)">Confirm</button>
+</div></div></div>
+
+<div class="modal" id="notificationModal"><div class="dialog">
+<div class="dialoghead"><h3>🔔 Super Admin Notifications</h3><button class="close" onclick="notificationModal.classList.remove('active')">×</button></div>
+<div id="notificationList" class="empty">Loading...</div>
+</div></div>
+
 <div class="modal" id="editorModal"><div class="dialog"><div class="dialoghead"><h3 id="editorTitle">Edit</h3><button class="close" onclick="editorModal.classList.remove('active')">×</button></div><form id="editorForm" class="editor" onsubmit="return saveEditor(event)"></form></div></div>
 <div class="modal" id="staffModal"><div class="dialog"><div class="dialoghead"><h3>Create Staff Admin</h3><button class="close" onclick="staffModal.classList.remove('active')">×</button></div><form id="staffForm" class="editor" onsubmit="return saveStaff(event)">
 <div class="ef"><label>Name *</label><input name="name" required></div><div class="ef"><label>Mobile *</label><input name="mobile" required></div><div class="ef"><label>Email</label><input name="email" type="email"></div><div class="ef"><label>Ward</label><input name="ward"></div><div class="ef full"><label>Address</label><textarea name="address"></textarea></div><div class="ef"><label>Initial Password *</label><input name="password" type="password" minlength="6" required></div><button class="save">Create Admin</button></form></div></div>
@@ -115,11 +130,15 @@ function logout(){token='';location.reload()}function showModules(){panel.classL
 function openSection(s){section=s;modules.style.display='none';panel.classList.add('active');panelTitle.textContent=(SECTIONS.find(x=>x[0]===s)||['','','Management'])[2];content.className='empty';content.textContent='Loading...';post({action:'adminData',section:s,token}).then(r=>{rows=Array.isArray(r.data)?r.data:[];render()}).catch(e=>content.textContent=e.message)}
 function idOf(r){return r.ID||r['User ID']||r.id||''}function render(){if(!rows.length){content.className='empty';content.textContent='No records found.';return}const cols=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(c=>!String(c).startsWith('_'));let h='<div class="tablewrap"><table><thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join('')+'<th>Actions</th></tr></thead><tbody>';rows.forEach((r,i)=>{h+='<tr>'+cols.map(c=>'<td title="'+esc(r[c])+'">'+esc(r[c])+'</td>').join('')+'<td><div class="rowbtns"><button style="background:#eaf7ed;color:#176b35" onclick="openEditor('+i+')">Edit</button><button style="background:#fff1f1;color:#b91c1c" onclick="removeRow('+i+')">Delete</button></div></td></tr>'});h+='</tbody></table></div>';content.className='';content.innerHTML=h}
 function openEditor(i){editing=i===null?null:rows[i];const obj=editing||rows[0]||{};const cols=Object.keys(obj).filter(c=>!String(c).startsWith('_')&&!['Password Salt','Password Hash'].includes(c));editorTitle.textContent=editing?'Edit Record':'Add Record';editorForm.innerHTML=cols.map(c=>{const v=editing?editing[c]:'';const full=/description|message|details|address/i.test(c);return `<div class="ef ${full?'full':''}"><label>${esc(c)}</label>${full?`<textarea name="${esc(c)}">${esc(v)}</textarea>`:`<input name="${esc(c)}" value="${esc(v)}">`}</div>`}).join('')+'<button class="save">Save</button>';editorModal.classList.add('active')}
-function saveEditor(e){e.preventDefault();if(!confirm(editing?'Save changes?':'Add record?'))return false;const data={};new FormData(editorForm).forEach((v,k)=>data[k]=v);post({action:'adminSave',section,operation:editing?'edit':'add',id:editing?idOf(editing):'',data,token}).then(()=>{editorModal.classList.remove('active');openSection(section)}).catch(e=>alert(e.message));return false}
-function removeRow(i){if(!confirm('Delete this record permanently?'))return;post({action:'adminUpdate',section,operation:'delete',id:idOf(rows[i]),token}).then(()=>openSection(section)).catch(e=>alert(e.message))}
-function createStaff(){staffForm.reset();staffModal.classList.add('active')}function saveStaff(e){e.preventDefault();if(!confirm('Create this staff admin account?'))return false;const d={action:'superAdminCreateStaff',token};new FormData(staffForm).forEach((v,k)=>d[k]=v);post(d).then(r=>{staffModal.classList.remove('active');alert(r.data.message)}).catch(e=>alert(e.message));return false}
+async function saveEditor(e){e.preventDefault();const ok=await askConfirm(editing?'Save Changes':'Add Record',editing?'Save the changes to this record?':'Add this new record?','Confirm');if(!ok)return false;const data={};new FormData(editorForm).forEach((v,k)=>data[k]=v);post({action:'adminSave',section,operation:editing?'edit':'add',id:editing?idOf(editing):'',data,token}).then(()=>{editorModal.classList.remove('active');openSection(section)}).catch(e=>alert(e.message));return false}
+async function removeRow(i){
+ const ok=await askConfirm('Delete Record','This will permanently delete the selected record. This action cannot be undone.','Delete');
+ if(!ok)return;
+ post({action:'adminUpdate',section,operation:'delete',id:idOf(rows[i]),token}).then(()=>openSection(section)).catch(e=>alert(e.message))
+}
+function createStaff(){staffForm.reset();staffModal.classList.add('active')}async function saveStaff(e){e.preventDefault();const ok=await askConfirm('Create Staff Admin','Create this staff admin account with the entered details?','Create Admin');if(!ok)return false;const d={action:'superAdminCreateStaff',token};new FormData(staffForm).forEach((v,k)=>d[k]=v);post(d).then(r=>{staffModal.classList.remove('active');alert(r.data.message)}).catch(e=>alert(e.message));return false}
 function loadStaff(){modules.style.display='none';panel.classList.add('active');panelTitle.textContent='Staff Admins';post({action:'superAdminListStaff',token}).then(r=>{rows=r.data||[];if(!rows.length){content.className='empty';content.textContent='No staff admins found.';return}let h='<div class="tablewrap"><table><thead><tr><th>Name</th><th>Mobile</th><th>Email</th><th>Ward</th><th>Status</th><th>Action</th></tr></thead><tbody>';rows.forEach((a,i)=>{h+=`<tr><td>${esc(a.name)}</td><td>${esc(a.mobile)}</td><td>${esc(a.email)}</td><td>${esc(a.ward)}</td><td>${esc(a.status)}</td><td><button onclick="toggleStaff(${i})">${a.status==='Active'?'Disable':'Enable'}</button></td></tr>`});h+='</tbody></table></div>';content.className='';content.innerHTML=h}).catch(e=>content.textContent=e.message)}
-function toggleStaff(i){const a=rows[i],status=a.status==='Active'?'Disabled':'Active';if(!confirm(status+' this admin?'))return;post({action:'superAdminSetStaffStatus',token,id:a.id,status}).then(loadStaff).catch(e=>alert(e.message))}
+async function toggleStaff(i){const a=rows[i],status=a.status==='Active'?'Disabled':'Active';const ok=await askConfirm(status+' Admin',status+' '+a.name+'?','Confirm');if(!ok)return;post({action:'superAdminSetStaffStatus',token,id:a.id,status}).then(loadStaff).catch(e=>alert(e.message))}
 
 function applyTheme(){
   const th=localStorage.getItem('scSuperTheme')||'light';
@@ -147,8 +166,9 @@ function changeSuperPassword(){
   }
   if(newPassword.value.length<6){alert('New password must contain at least 6 characters.');return}
   if(newPassword.value!==confirmPassword.value){alert('New passwords do not match.');return}
-  if(!confirm('Change the Super Admin password?'))return;
-  post({action:'adminChangePassword',token,currentPassword:currentPassword.value,newPassword:newPassword.value})
+  askConfirm('Change Password','Change the Super Admin password?','Change Password').then(function(ok){
+    if(!ok)return;
+    post({action:'adminChangePassword',token,currentPassword:currentPassword.value,newPassword:newPassword.value})
     .then(r=>{
       currentPassword.value='';newPassword.value='';confirmPassword.value='';
       pwBox.classList.remove('active');
