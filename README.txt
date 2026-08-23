@@ -1,26 +1,18 @@
-Sursand Connect Super Admin v2.2
+Sursand Connect Super Admin v2.3
 
-FIXES
-- Login button works again.
-- Fixed JavaScript syntax error introduced in v2.1.
-- Super Admin login session is saved in localStorage.
-- Refreshing/reopening the page restores the Super Admin session while the backend token is still valid.
-- Logout explicitly clears the saved Super Admin token.
-- Stored session is validated against the backend on page load.
+FIXED
+- Login button uses a direct event listener instead of unreliable element-id globals.
+- All important DOM elements are now accessed with document.getElementById.
+- Login works with click and Enter key.
+- Added Show/Hide password on the Super Admin login screen.
+- Existing valid Super Admin session is stored in localStorage and restored after refresh.
+- Invalid/expired stored sessions return to Login cleanly.
 
-CONFIRMATIONS
-- Beautiful confirmation popup before Add, Edit, Delete, Staff Admin creation,
-  Staff Admin enable/disable, and Super Admin password change.
+RETAINED
+- Light theme default + Dark/Light toggle.
+- Multicolour 3D module cards.
+- Confirmation dialogs before Add, Edit, Delete, Staff Admin create/enable/disable and password change.
+- Super Admin notification bell and unseen red dot.
+- Super Admin password change with Show/Hide controls.
 
-NOTIFICATIONS
-- Super Admin notification bell restored.
-- Red dot appears only for unseen private request/admin notifications.
-- Notifications are checked after login and every 60 seconds while the app is open.
-- Opening the bell marks displayed notifications as seen on that device.
-
-DESIGN
-- Light theme remains default.
-- Light/Dark toggle retained.
-- Multicolour 3D module cards retained.
-
-No Apps Script/backend change is required for this v2.2 frontend fix.
+No Apps Script change is required for v2.3.
