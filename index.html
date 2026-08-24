@@ -17,23 +17,367 @@ button,a{font-family:inherit}.head{height:72px;margin:8px 10px 0;border-radius:1
 html,body{height:100%;overflow:hidden}.shell{height:100%;display:flex;flex-direction:column}.grid{flex:1;min-height:0;padding:7px 10px 9px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(9,minmax(0,1fr));gap:6px;overflow:hidden}.card{border:0;border-radius:12px;color:#fff;text-decoration:none;display:flex;align-items:center;gap:6px;padding:6px;min-height:0;box-shadow:0 4px 0 rgba(15,23,42,.09),0 8px 13px rgba(15,23,42,.08);overflow:hidden}.card:nth-child(6n+1){background:linear-gradient(145deg,#ff8a5b,#e85d3f)}.card:nth-child(6n+2){background:linear-gradient(145deg,#4fb7f3,#2563eb)}.card:nth-child(6n+3){background:linear-gradient(145deg,#ec6f9b,#db2777)}.card:nth-child(6n+4){background:linear-gradient(145deg,#8b7cf6,#6d4adf)}.card:nth-child(6n+5){background:linear-gradient(145deg,#47b77f,#1f8a55)}.card:nth-child(6n+6){background:linear-gradient(145deg,#f3b44e,#df8a18)}.card i{width:30px;height:30px;min-width:30px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:15px;box-shadow:0 2px 7px rgba(15,23,42,.12)}.card b{font-size:7.6px;line-height:1.1;overflow-wrap:anywhere}.login{max-width:430px;margin:30px auto;background:var(--panel);border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(15,23,42,.12)}.field{display:flex;flex-direction:column;gap:5px;margin-top:9px}.field label{font-size:9px;font-weight:800}.pw{position:relative}input{width:100%;border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--panel);color:var(--text)}.pw input{padding-right:50px}.pw button{position:absolute;right:4px;top:4px;height:32px;border:0;border-radius:7px;background:var(--panel2);color:var(--text);font-size:8px}.loginbtn{width:100%;border:0;border-radius:10px;padding:11px;background:#238b45;color:#fff;font-size:9px;font-weight:900;margin-top:11px}.homeNotice{display:none;position:fixed;left:12px;right:12px;top:88px;max-width:470px;margin:auto;background:var(--panel);border:1px solid var(--border);border-left:5px solid #f28c28;border-radius:15px;padding:11px 38px 11px 11px;box-shadow:0 18px 42px rgba(15,23,42,.22);z-index:800}.homeNotice.show{display:block}.homeNotice h4{margin:0 0 4px;font-size:10px}.homeNotice p{margin:0;font-size:8px;color:var(--muted);line-height:1.45}.homeNotice .x{position:absolute;right:7px;top:7px;width:27px;height:27px;border:0;border-radius:8px;background:var(--panel2);color:var(--text)}.homeNotice .view{margin-top:7px;border:0;border-radius:9px;padding:7px 9px;background:#238b45;color:#fff;font-size:8px;font-weight:900}
 </style></head><body><div class="shell">
 <header class="head"><img class="logo" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgM6ePTCVaqvhVtE9SqPzEyzrYrHjo0MlxUbzHS1D8ORCNX_at01YJcY6a7ltTxA2AaYEuojBw-VotVudZXLNUHVSs6xQvLX6zbNBh-bVnm0v6gURU0yStk_fObHB9rGNwbkf2v_GTyAmcwAG0m8srp0at1riLJSCvOLU3kFneNoNlX-C1XLbioi4RtmDfU/s1600/IMG_20260820_101456.png"><div class="headcopy"><h1>Super Admin</h1><p>Sursand Connect owner admin panel</p></div><div class="headbtns"><button class="iconbtn" id="bell">🔔<span id="bellDot" class="dot"></span></button><button class="iconbtn" id="menuBtn">☰</button></div><div class="menu" id="menu"><button onclick="toggleTheme()">🌓 Change Theme</button><button onclick="openPassword()">🔑 Change Password</button><a href="staff.html?action=create">➕ Create Admin</a><a href="staff.html">👥 Staff Admins</a><a href="https://sursandconnect.github.io/sursand-connect-app/" target="_blank">🏠 Open Sursand Connect App</a><button onclick="logout()">↪ Logout</button></div></header>
-<div id="login" class="login" style="display:none"><h2 style="margin:0;font-size:16px">Super Admin Login</h2><div class="field"><label>Admin ID</label><input id="user"></div><div class="field"><label>Password</label><div class="pw"><input id="password" type="password"><button id="pwToggle">Show</button></div></div><button class="loginbtn" id="loginBtn">Login</button><div id="status" style="font-size:9px;margin-top:8px"></div></div>
+<div id="loginBox" class="login" style="display:none"><h2 style="margin:0;font-size:16px">Super Admin Login</h2><div class="field"><label>Admin ID</label><input id="user"></div><div class="field"><label>Password</label><div class="pw"><input id="password" type="password"><button id="pwToggle">Show</button></div></div><button class="loginbtn" id="loginBtn">Login</button><div id="status" style="font-size:9px;margin-top:8px"></div></div>
 <main id="grid" class="grid" style="display:none"></main>
 <div id="homeNotice" class="homeNotice"><button class="x" onclick="homeNotice.classList.remove('show')">×</button><h4 id="noticeTitle"></h4><p id="noticeMsg"></p><button class="view" onclick="openNotice()">View Request</button></div>
 <div id="pwModal" class="modal"><div class="dialog" style="max-width:430px"><div class="dialoghead"><h3>Change Super Admin Password</h3><button class="close" onclick="pwModal.classList.remove('active')">×</button></div><div class="field"><label>Current Password</label><div class="pw"><input id="curPw" type="password"><button onclick="togglePw('curPw',this)">Show</button></div></div><div class="field"><label>New Password</label><div class="pw"><input id="newPw" type="password"><button onclick="togglePw('newPw',this)">Show</button></div></div><div class="field"><label>Confirm Password</label><div class="pw"><input id="conPw" type="password"><button onclick="togglePw('conPw',this)">Show</button></div></div><button class="loginbtn" onclick="changePassword()">Update Password</button></div></div>
 <div id="confirmModal" class="modal confirm"><div class="dialog" style="max-width:390px"><div class="dialoghead"><h3 id="confirmTitle">Confirm</h3><button class="close" onclick="resolveConfirm(false)">×</button></div><p id="confirmText" style="font-size:10px;color:var(--muted);line-height:1.5"></p><div style="display:flex;justify-content:flex-end;gap:8px"><button class="small" onclick="resolveConfirm(false)">Cancel</button><button id="confirmYes" class="small green" onclick="resolveConfirm(true)">Confirm</button></div></div></div>
 <div id="toast" class="toast"></div>
 <script>
-const API="https://script.google.com/macros/s/AKfycbzrDLNOj56LEjyLuf4PJiBsH5s36RgRi6y55NjjVJtxvRjFPUMdcXLsOK4ojNUssdNX/exec",TOKEN_KEY='scSuperAdminToken',MODULES=[{"id": "businesses", "icon": "🏪", "title": "Businesses"}, {"id": "services", "icon": "🛠️", "title": "Local Services"}, {"id": "healthcare", "icon": "🏥", "title": "Healthcare"}, {"id": "doctors", "icon": "👨‍⚕️", "title": "Doctors"}, {"id": "education", "icon": "🎓", "title": "Education"}, {"id": "transport", "icon": "🚌", "title": "Transport"}, {"id": "places", "icon": "📍", "title": "Important Places"}, {"id": "governmentOffices", "icon": "🏛️", "title": "Government Offices"}, {"id": "events", "icon": "📅", "title": "Events & Announcements"}, {"id": "notifications", "icon": "🔔", "title": "Public Notifications"}, {"id": "representatives", "icon": "👥", "title": "Representatives"}, {"id": "cityConnect", "icon": "💬", "title": "City Connect"}, {"id": "changeMakers", "icon": "✨", "title": "Change Makers"}, {"id": "contacts", "icon": "✉️", "title": "Contact Messages"}, {"id": "agriculture", "icon": "🌾", "title": "Agriculture"}, {"id": "usefulLinks", "icon": "🌐", "title": "Useful Links"}, {"id": "governmentServices", "icon": "🏢", "title": "Government Services"}, {"id": "importantContacts", "icon": "☎️", "title": "Important Contacts"}, {"id": "pathology", "icon": "🧪", "title": "Pathology Requests"}, {"id": "medicineOrders", "icon": "💊", "title": "Medicine Orders"}, {"id": "jobs", "icon": "💼", "title": "Jobs"}, {"id": "users", "icon": "👤", "title": "App Users"}, {"id": "localAds", "icon": "📣", "title": "Local Advertisements"}, {"id": "settings", "icon": "⚙️", "title": "App Settings"}, {"id": "emergency", "icon": "🚨", "title": "Emergency"}, {"id": "adminNotifications", "icon": "📥", "title": "Request Notifications"}];
-const $=id=>document.getElementById(id);let token='',notifications=[],latest=null,confirmResolve=null;
-function post(p){return fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(p),redirect:'follow'}).then(r=>r.text()).then(t=>{let x;try{x=JSON.parse(t)}catch(e){throw Error('Invalid server response.')}if(!x||x.success!==true)throw Error(x&&x.error?x.error:'Request failed.');return x})}
-function toastMsg(m,e=false){toast.textContent=m;toast.classList.toggle('error',e);toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),2200)}
-function render(){grid.innerHTML=MODULES.map(m=>`<a class="card" href="module.html?section=${encodeURIComponent(m.id)}"><i>${m.icon}</i><b>${m.title}</b></a>`).join('')}
-async function login(){const u=user.value.trim(),p=password.value;if(!u||!p){status.textContent='Enter Admin ID and password.';return}status.textContent='Checking...';try{const r=await post({action:'adminLogin',user:u,password:p});token=r.data.token;localStorage.setItem(TOKEN_KEY,token);password.value='';status.textContent='';showApp()}catch(e){status.textContent=e.message}}
-async function restore(){applyTheme();token=localStorage.getItem(TOKEN_KEY)||'';if(!token){login.style.display='block';return}try{await post({action:'adminData',section:'adminNotifications',token});showApp()}catch(e){localStorage.removeItem(TOKEN_KEY);token='';login.style.display='block'}}
-function showApp(){login.style.display='none';grid.style.display='grid';render();checkNotifications();if(!window.nt)window.nt=setInterval(checkNotifications,60000)}
-function logout(){localStorage.removeItem(TOKEN_KEY);location.reload()}function togglePw(id,b){const e=$(id),s=e.type==='password';e.type=s?'text':'password';b.textContent=s?'Hide':'Show'}function toggleTheme(){const t=localStorage.getItem('scSuperTheme')||'light';localStorage.setItem('scSuperTheme',t==='dark'?'light':'dark');applyTheme();menu.classList.remove('active')}function applyTheme(){document.documentElement.classList.toggle('dark',(localStorage.getItem('scSuperTheme')||'light')==='dark')}function openPassword(){menu.classList.remove('active');pwModal.classList.add('active')}
-function askConfirm(t,m,b){confirmTitle.textContent=t;confirmText.textContent=m;confirmYes.textContent=b||'Confirm';confirmModal.classList.add('active');return new Promise(r=>confirmResolve=r)}function resolveConfirm(v){confirmModal.classList.remove('active');if(confirmResolve){const r=confirmResolve;confirmResolve=null;r(v)}}
-async function changePassword(){if(!curPw.value||!newPw.value||!conPw.value){toastMsg('Complete all password fields.',true);return}if(newPw.value!==conPw.value){toastMsg('New passwords do not match.',true);return}if(!await askConfirm('Change Password','Change the Super Admin password?','Change Password'))return;try{const r=await post({action:'adminChangePassword',token,currentPassword:curPw.value,newPassword:newPw.value});curPw.value=newPw.value=conPw.value='';pwModal.classList.remove('active');toastMsg(r.data.message||'Password updated successfully.')}catch(e){toastMsg(e.message,true)}}
-function nkey(n){return 'scSuperSeen:'+String(n.ID||n['Request ID']||n.Title||JSON.stringify(n))}async function checkNotifications(){if(!token)return;try{const r=await post({action:'adminData',section:'adminNotifications',token});notifications=Array.isArray(r.data)?r.data:[];const unseen=notifications.filter(n=>!localStorage.getItem(nkey(n)));bellDot.style.display=unseen.length?'block':'none';latest=unseen.length?unseen[unseen.length-1]:null;if(latest){noticeTitle.textContent=latest.Title||latest['Request Type']||'New request';noticeMsg.textContent=latest.Message||latest['Request ID']||'';homeNotice.classList.add('show')}}catch(e){}}function openNotice(){if(!latest)return;localStorage.setItem(nkey(latest),'1');location.href='module.html?section=adminNotifications&requestId='+encodeURIComponent(latest['Request ID']||'')}bell.onclick=()=>location.href='module.html?section=adminNotifications';menuBtn.onclick=()=>menu.classList.toggle('active');document.addEventListener('click',e=>{if(menu.classList.contains('active')&&!e.target.closest('#menu')&&!e.target.closest('#menuBtn'))menu.classList.remove('active')});pwToggle.onclick=()=>togglePw('password',pwToggle);loginBtn.onclick=login;password.onkeydown=e=>{if(e.key==='Enter')login()};document.addEventListener('DOMContentLoaded',restore);
+const API="https://script.google.com/macros/s/AKfycbzrDLNOj56LEjyLuf4PJiBsH5s36RgRi6y55NjjVJtxvRjFPUMdcXLsOK4ojNUssdNX/exec";
+const TOKEN_KEY='scSuperAdminToken';
+const MODULES=[{"id": "businesses", "icon": "🏪", "title": "Businesses"}, {"id": "services", "icon": "🛠️", "title": "Local Services"}, {"id": "healthcare", "icon": "🏥", "title": "Healthcare"}, {"id": "doctors", "icon": "👨‍⚕️", "title": "Doctors"}, {"id": "education", "icon": "🎓", "title": "Education"}, {"id": "transport", "icon": "🚌", "title": "Transport"}, {"id": "places", "icon": "📍", "title": "Important Places"}, {"id": "governmentOffices", "icon": "🏛️", "title": "Government Offices"}, {"id": "events", "icon": "📅", "title": "Events & Announcements"}, {"id": "notifications", "icon": "🔔", "title": "Public Notifications"}, {"id": "representatives", "icon": "👥", "title": "Representatives"}, {"id": "cityConnect", "icon": "💬", "title": "City Connect"}, {"id": "changeMakers", "icon": "✨", "title": "Change Makers"}, {"id": "contacts", "icon": "✉️", "title": "Contact Messages"}, {"id": "agriculture", "icon": "🌾", "title": "Agriculture"}, {"id": "usefulLinks", "icon": "🌐", "title": "Useful Links"}, {"id": "governmentServices", "icon": "🏢", "title": "Government Services"}, {"id": "importantContacts", "icon": "☎️", "title": "Important Contacts"}, {"id": "pathology", "icon": "🧪", "title": "Pathology Requests"}, {"id": "medicineOrders", "icon": "💊", "title": "Medicine Orders"}, {"id": "jobs", "icon": "💼", "title": "Jobs"}, {"id": "users", "icon": "👤", "title": "App Users"}, {"id": "localAds", "icon": "📣", "title": "Local Advertisements"}, {"id": "settings", "icon": "⚙️", "title": "App Settings"}, {"id": "emergency", "icon": "🚨", "title": "Emergency"}, {"id": "adminNotifications", "icon": "📥", "title": "Request Notifications"}];
+
+const $=id=>document.getElementById(id);
+
+let token='';
+let notifications=[];
+let latest=null;
+let confirmResolve=null;
+
+function post(payload){
+  return fetch(API,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(payload),
+    redirect:'follow'
+  })
+  .then(r=>r.text())
+  .then(t=>{
+    let x;
+    try{x=JSON.parse(t)}catch(e){throw new Error('Invalid server response.')}
+    if(!x||x.success!==true)throw new Error(x&&x.error?x.error:'Request failed.');
+    return x;
+  });
+}
+
+function toastMsg(message,isError=false){
+  const el=$('toast');
+  if(!el)return;
+  el.textContent=message||'Done successfully.';
+  el.classList.toggle('error',isError);
+  el.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function renderModules(){
+  const box=$('grid');
+  if(!box)return;
+  box.innerHTML=MODULES.map(m=>
+    `<a class="card" href="module.html?section=${encodeURIComponent(m.id)}"><i>${m.icon}</i><b>${m.title}</b></a>`
+  ).join('');
+}
+
+function showLogin(){
+  const loginBox=$('loginBox');
+  const grid=$('grid');
+  if(loginBox)loginBox.style.display='block';
+  if(grid)grid.style.display='none';
+}
+
+function showApp(){
+  const loginBox=$('loginBox');
+  const grid=$('grid');
+
+  if(loginBox)loginBox.style.display='none';
+  if(grid)grid.style.display='grid';
+
+  renderModules();
+  checkNotifications();
+
+  if(!window._notificationTimer){
+    window._notificationTimer=setInterval(checkNotifications,60000);
+  }
+}
+
+async function doLogin(){
+  const userEl=$('user');
+  const passEl=$('password');
+  const statusEl=$('status');
+  const btn=$('loginBtn');
+
+  const userValue=userEl?userEl.value.trim():'';
+  const passwordValue=passEl?passEl.value:'';
+
+  if(!userValue||!passwordValue){
+    if(statusEl)statusEl.textContent='Enter Admin ID and password.';
+    return;
+  }
+
+  if(statusEl)statusEl.textContent='Checking...';
+  if(btn)btn.disabled=true;
+
+  try{
+    const r=await post({
+      action:'adminLogin',
+      user:userValue,
+      password:passwordValue
+    });
+
+    token=r&&r.data&&r.data.token?r.data.token:'';
+
+    if(!token)throw new Error('No admin session received.');
+
+    localStorage.setItem(TOKEN_KEY,token);
+
+    if(passEl)passEl.value='';
+    if(statusEl)statusEl.textContent='';
+
+    showApp();
+  }
+  catch(e){
+    token='';
+    localStorage.removeItem(TOKEN_KEY);
+    if(statusEl)statusEl.textContent=e.message||'Login failed.';
+  }
+  finally{
+    if(btn)btn.disabled=false;
+  }
+}
+
+async function restore(){
+  applyTheme();
+
+  token=localStorage.getItem(TOKEN_KEY)||'';
+
+  if(!token){
+    showLogin();
+    return;
+  }
+
+  try{
+    await post({
+      action:'adminData',
+      section:'adminNotifications',
+      token
+    });
+
+    showApp();
+  }
+  catch(e){
+    token='';
+    localStorage.removeItem(TOKEN_KEY);
+    showLogin();
+  }
+}
+
+function logout(){
+  token='';
+  localStorage.removeItem(TOKEN_KEY);
+  location.reload();
+}
+
+function togglePw(id,button){
+  const el=$(id);
+  if(!el)return;
+  const show=el.type==='password';
+  el.type=show?'text':'password';
+  if(button)button.textContent=show?'Hide':'Show';
+}
+
+function toggleTheme(){
+  const current=localStorage.getItem('scSuperTheme')||'light';
+  localStorage.setItem('scSuperTheme',current==='dark'?'light':'dark');
+  applyTheme();
+  const menu=$('menu');
+  if(menu)menu.classList.remove('active');
+}
+
+function applyTheme(){
+  const current=localStorage.getItem('scSuperTheme')||'light';
+  document.documentElement.classList.toggle('dark',current==='dark');
+}
+
+function openPassword(){
+  const menu=$('menu');
+  const modal=$('pwModal');
+  if(menu)menu.classList.remove('active');
+  if(modal)modal.classList.add('active');
+}
+
+function askConfirm(title,text,buttonText){
+  $('confirmTitle').textContent=title||'Confirm';
+  $('confirmText').textContent=text||'Are you sure?';
+  $('confirmYes').textContent=buttonText||'Confirm';
+  $('confirmModal').classList.add('active');
+  return new Promise(resolve=>{confirmResolve=resolve});
+}
+
+function resolveConfirm(value){
+  $('confirmModal').classList.remove('active');
+  if(confirmResolve){
+    const r=confirmResolve;
+    confirmResolve=null;
+    r(value);
+  }
+}
+
+async function changePassword(){
+  const current=$('curPw').value;
+  const next=$('newPw').value;
+  const confirmNext=$('conPw').value;
+
+  if(!current||!next||!confirmNext){
+    toastMsg('Complete all password fields.',true);
+    return;
+  }
+
+  if(next!==confirmNext){
+    toastMsg('New passwords do not match.',true);
+    return;
+  }
+
+  if(!await askConfirm(
+    'Change Password',
+    'Change the Super Admin password?',
+    'Change Password'
+  ))return;
+
+  try{
+    const r=await post({
+      action:'adminChangePassword',
+      token,
+      currentPassword:current,
+      newPassword:next
+    });
+
+    $('curPw').value='';
+    $('newPw').value='';
+    $('conPw').value='';
+    $('pwModal').classList.remove('active');
+
+    toastMsg(
+      r&&r.data&&r.data.message
+        ? r.data.message
+        : 'Password updated successfully.'
+    );
+  }
+  catch(e){
+    toastMsg(e.message||'Unable to update password.',true);
+  }
+}
+
+function nkey(n){
+  return 'scSuperSeen:'+String(
+    n.ID||
+    n['Request ID']||
+    n.Title||
+    JSON.stringify(n)
+  );
+}
+
+async function checkNotifications(){
+  if(!token)return;
+
+  try{
+    const r=await post({
+      action:'adminData',
+      section:'adminNotifications',
+      token
+    });
+
+    notifications=Array.isArray(r.data)?r.data:[];
+
+    const unseen=
+      notifications.filter(
+        n=>!localStorage.getItem(nkey(n))
+      );
+
+    const dot=$('bellDot');
+    if(dot)dot.style.display=unseen.length?'block':'none';
+
+    latest=unseen.length
+      ? unseen[unseen.length-1]
+      : null;
+
+    if(latest){
+      $('noticeTitle').textContent=
+        latest.Title||
+        latest['Request Type']||
+        'New request';
+
+      $('noticeMsg').textContent=
+        latest.Message||
+        latest['Request ID']||
+        '';
+
+      $('homeNotice').classList.add('show');
+    }
+  }
+  catch(e){
+    // Notification polling should never blank the home screen.
+  }
+}
+
+function openNotice(){
+  if(!latest)return;
+
+  localStorage.setItem(
+    nkey(latest),
+    '1'
+  );
+
+  location.href=
+    'module.html?section=adminNotifications&requestId='+
+    encodeURIComponent(
+      latest['Request ID']||''
+    );
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const bell=$('bell');
+  const menuBtn=$('menuBtn');
+  const pwToggle=$('pwToggle');
+  const loginBtn=$('loginBtn');
+  const passwordEl=$('password');
+
+  if(bell){
+    bell.addEventListener(
+      'click',
+      ()=>location.href='module.html?section=adminNotifications'
+    );
+  }
+
+  if(menuBtn){
+    menuBtn.addEventListener('click',()=>{
+      const menu=$('menu');
+      if(menu)menu.classList.toggle('active');
+    });
+  }
+
+  if(pwToggle){
+    pwToggle.addEventListener(
+      'click',
+      ()=>togglePw('password',pwToggle)
+    );
+  }
+
+  if(loginBtn){
+    loginBtn.addEventListener(
+      'click',
+      doLogin
+    );
+  }
+
+  if(passwordEl){
+    passwordEl.addEventListener('keydown',e=>{
+      if(e.key==='Enter')doLogin();
+    });
+  }
+
+  document.addEventListener('click',e=>{
+    const menu=$('menu');
+    if(
+      menu&&
+      menu.classList.contains('active')&&
+      !e.target.closest('#menu')&&
+      !e.target.closest('#menuBtn')
+    ){
+      menu.classList.remove('active');
+    }
+  });
+
+  restore();
+});
 </script></div></body></html>
