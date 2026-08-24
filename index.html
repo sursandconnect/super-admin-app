@@ -85,7 +85,138 @@ input,select,textarea{background:var(--panel)!important;color:var(--text)!import
 @media(max-width:700px){.pwgrid{grid-template-columns:1fr}}
 </style>
 
+
+<style>
+/* ===== SUPER ADMIN v3 COMPACT HOME ===== */
+body{overflow-x:hidden}
+.wrap{max-width:1250px;margin:auto;padding:8px 10px 18px!important}
+.top{display:none!important}
+
+.sa-header{
+  position:sticky;top:0;z-index:50;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;padding:9px 10px;margin-bottom:8px;
+  box-shadow:0 8px 20px rgba(15,23,42,.08);
+  display:flex;align-items:center;justify-content:space-between;gap:8px
+}
+.sa-head-copy{min-width:0}
+.sa-head-copy h1{margin:0;font-size:16px;color:var(--text);line-height:1.1}
+.sa-head-copy p{margin:3px 0 0;font-size:8px;color:var(--muted);line-height:1.2}
+.sa-head-actions{display:flex;gap:6px;align-items:center}
+.sa-icon-btn{
+  width:36px;height:36px;border-radius:11px;border:1px solid var(--border);
+  background:var(--panel2);color:var(--text);display:flex;align-items:center;
+  justify-content:center;font-size:17px;position:relative;box-shadow:0 4px 11px rgba(15,23,42,.07)
+}
+.sa-menu{
+  display:none;position:absolute;right:10px;top:54px;width:205px;background:var(--panel);
+  border:1px solid var(--border);border-radius:14px;padding:7px;box-shadow:0 16px 38px rgba(15,23,42,.18);z-index:100
+}
+.sa-menu.active{display:block}
+.sa-menu button{
+  width:100%;border:0;background:transparent;color:var(--text);padding:9px 8px;
+  border-radius:9px;text-align:left;font-size:9px;font-weight:800;display:flex;gap:8px;align-items:center
+}
+.sa-menu button:active{background:var(--panel2)}
+.toolbar{display:none!important}
+.modules{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:5px!important;margin:0!important
+}
+.module{
+  min-height:47px!important;padding:6px 5px!important;border-radius:11px!important;
+  display:flex!important;align-items:center!important;gap:6px!important;
+  box-shadow:0 4px 0 rgba(15,23,42,.09),0 8px 13px rgba(15,23,42,.08)!important
+}
+.module i{
+  width:27px!important;height:27px!important;min-width:27px!important;border-radius:8px!important;
+  font-size:14px!important;box-shadow:0 2px 7px rgba(15,23,42,.12)!important
+}
+.module b{font-size:7.3px!important;line-height:1.1!important;margin:0!important}
+.panel{margin-top:8px!important}
+.panelhead{padding:8px!important}
+.panelhead h3{font-size:11px!important}
+.small{padding:7px 8px!important;font-size:7px!important}
+.tablewrap{max-height:67vh!important}
+
+.sa-toast{
+  position:fixed;left:50%;bottom:20px;transform:translate(-50%,30px);
+  opacity:0;pointer-events:none;z-index:1000;min-width:210px;max-width:85vw;
+  padding:10px 13px;border-radius:12px;background:#176b35;color:#fff;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);font-size:9px;font-weight:900;text-align:center;
+  transition:.22s ease
+}
+.sa-toast.show{opacity:1;transform:translate(-50%,0)}
+.sa-toast.error{background:#b91c1c}
+
+.sa-notify-card{
+  position:fixed;left:12px;right:12px;top:66px;z-index:150;
+  max-width:480px;margin:auto;background:var(--panel);color:var(--text);
+  border:1px solid var(--border);border-left:5px solid #f28c28;border-radius:15px;
+  padding:11px 38px 11px 11px;box-shadow:0 18px 42px rgba(15,23,42,.22);
+  display:none
+}
+.sa-notify-card.show{display:block}
+.sa-notify-card h4{margin:0 0 4px;font-size:10px}
+.sa-notify-card p{margin:0;font-size:8px;color:var(--muted);line-height:1.45}
+.sa-notify-card .close{
+  position:absolute;right:7px;top:7px;width:27px;height:27px;border:0;border-radius:8px;
+  background:var(--panel2);color:var(--text);font-size:15px
+}
+.sa-notify-card .view{
+  margin-top:8px;border:0;border-radius:9px;padding:7px 9px;background:#238b45;
+  color:#fff;font-size:8px;font-weight:900
+}
+
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.detail-item{background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:8px}
+.detail-item small{display:block;color:var(--muted);font-size:7px}
+.detail-item b{display:block;color:var(--text);font-size:9px;margin-top:3px;word-break:break-word}
+.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.detail-actions button{border:0;border-radius:10px;padding:9px;font-size:8px;font-weight:900}
+
+.editor select{border:1px solid var(--border);border-radius:9px;padding:9px;background:var(--panel);color:var(--text);font:inherit;font-size:9px}
+
+@media(max-width:420px){
+  .sa-head-copy h1{font-size:14px}
+  .sa-head-copy p{font-size:7px}
+  .module{min-height:45px!important}
+  .module b{font-size:6.7px!important}
+  .detail-grid{grid-template-columns:1fr}
+}
+</style>
+
 </head><body><main class="wrap">
+
+<div class="sa-header">
+  <div class="sa-head-copy">
+    <h1>Super Admin</h1>
+    <p>Sursand Connect owner admin panel</p>
+  </div>
+  <div class="sa-head-actions">
+    <button class="sa-icon-btn" id="superBell" type="button" aria-label="Notifications">🔔
+      <span id="superBellDot" style="display:none;position:absolute;right:5px;top:4px;width:7px;height:7px;border-radius:50%;background:#dc2626;border:1px solid #fff"></span>
+    </button>
+    <button class="sa-icon-btn" id="menuBtn" type="button" aria-label="Menu">☰</button>
+  </div>
+  <div class="sa-menu" id="saMenu">
+    <button type="button" onclick="toggleTheme()">🌓 <span id="menuThemeText">Change Theme</span></button>
+    <button type="button" onclick="togglePasswordBox();closeMenu()">🔑 Change Password</button>
+    <button type="button" onclick="createStaff();closeMenu()">➕ Create Admin</button>
+    <button type="button" onclick="loadStaff();closeMenu()">👥 Staff Admins</button>
+    <button type="button" onclick="logout()">↪ Logout</button>
+  </div>
+</div>
+
+<div id="homeNotificationCard" class="sa-notify-card">
+  <button class="close" type="button" onclick="hideHomeNotification()">×</button>
+  <h4 id="homeNotifyTitle">New request</h4>
+  <p id="homeNotifyMessage"></p>
+  <button class="view" type="button" onclick="openLatestNotification()">View Request</button>
+</div>
+
+<div id="saToast" class="sa-toast">Saved successfully.</div>
+
 <section class="top"><h1>🛡️ Sursand Connect Super Admin</h1><p>Owner-only control centre with complete access to Sursand Connect data, modules, staff admins, requests, settings and public content.</p></section>
 <section class="login" id="loginBox"><h2 style="margin:0;font-size:16px">Super Admin Login</h2><div class="field"><label>Admin ID</label><input id="user"></div><div class="field"><label>Password</label>
     <div class="pw"><input id="pw" type="password" autocomplete="current-password">
@@ -119,6 +250,15 @@ input,select,textarea{background:var(--panel)!important;color:var(--text)!import
 <div id="notificationList" class="empty">Loading...</div>
 </div></div>
 
+
+<div class="modal" id="requestDetailModal"><div class="dialog">
+  <div class="dialoghead">
+    <h3 id="requestDetailTitle">Request Details</h3>
+    <button class="close" type="button" onclick="requestDetailModal.classList.remove('active')">×</button>
+  </div>
+  <div id="requestDetailBody"></div>
+</div></div>
+
 <div class="modal" id="editorModal"><div class="dialog"><div class="dialoghead"><h3 id="editorTitle">Edit</h3><button class="close" onclick="editorModal.classList.remove('active')">×</button></div><form id="editorForm" class="editor" onsubmit="return saveEditor(event)"></form></div></div>
 <div class="modal" id="staffModal"><div class="dialog"><div class="dialoghead"><h3>Create Staff Admin</h3><button class="close" onclick="staffModal.classList.remove('active')">×</button></div><form id="staffForm" class="editor" onsubmit="return saveStaff(event)">
 <div class="ef"><label>Name *</label><input name="name" required></div><div class="ef"><label>Mobile *</label><input name="mobile" required></div><div class="ef"><label>Email</label><input name="email" type="email"></div><div class="ef"><label>Ward</label><input name="ward"></div><div class="ef full"><label>Address</label><textarea name="address"></textarea></div><div class="ef"><label>Initial Password *</label><input name="password" type="password" minlength="6" required></div><button class="save">Create Admin</button></form></div></div>
@@ -133,6 +273,8 @@ let rows=[];
 let editing=null;
 let scConfirmResolve=null;
 let superNotifications=[];
+let latestNotification=null;
+let currentRequestDetail=null;
 
 const $=id=>document.getElementById(id);
 
@@ -165,6 +307,20 @@ const SECTIONS=[
  ['adminNotifications','🔔','Request Notifications']
 ];
 
+const FIXED_OPTIONS={
+ 'Status':['Active','Inactive','Pending','Approved','Rejected','Disabled'],
+ 'Active':['Yes','No'],
+ 'Ward':['Ward 1','Ward 2','Ward 3','Ward 4','Ward 5','Ward 6','Ward 7','Ward 8','Ward 9','Ward 10','Ward 11','Ward 12','Ward 13','Ward 14','Ward 15','Ward 16','Ward 17','Ward 18'],
+ 'Record Type':['Event','Announcement','Healthcare','Doctor'],
+ 'Type':['Event','Announcement'],
+ 'Priority':['Low','Normal','High','Urgent'],
+ 'Availability':['Available','Unavailable','By Appointment'],
+ 'Role':['Chairman','Vice Chairman','Ward Councillor'],
+ 'Category':['General','Announcement','Event','Healthcare','Education','Government','Emergency','Business','Service'],
+ 'Medical System':['Allopathic','Ayurvedic','Homeopathic','Unani','Other'],
+ 'Institution Type':['Government School','Private School','College','Coaching Centre','Training Institute','Other']
+};
+
 function post(payload){
  return fetch(API,{
    method:'POST',
@@ -185,9 +341,19 @@ function esc(v){
  }[m]));
 }
 
-function setStatus(msg){
- const el=$('status');
- if(el) el.textContent=msg||'';
+function toast(msg,type='ok'){
+ const el=$('saToast');
+ if(!el)return;
+ el.textContent=msg||'Done successfully.';
+ el.classList.toggle('error',type==='error');
+ el.classList.add('show');
+ clearTimeout(window._saToastTimer);
+ window._saToastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function showLogin(){
+ if($('loginBox'))$('loginBox').style.display='block';
+ if($('dash'))$('dash').style.display='none';
 }
 
 function renderModules(){
@@ -198,16 +364,9 @@ function renderModules(){
  ).join('');
 }
 
-function showLogin(){
- const loginBox=$('loginBox'),dash=$('dash');
- if(loginBox)loginBox.style.display='block';
- if(dash)dash.style.display='none';
-}
-
 function showDashboard(){
- const loginBox=$('loginBox'),dash=$('dash');
- if(loginBox)loginBox.style.display='none';
- if(dash)dash.style.display='block';
+ if($('loginBox'))$('loginBox').style.display='none';
+ if($('dash'))$('dash').style.display='block';
  renderModules();
  checkSuperNotifications();
  if(!window.scSuperNotifyTimer){
@@ -216,26 +375,21 @@ function showDashboard(){
 }
 
 async function doLogin(){
- const userEl=$('user'), pwEl=$('pw'), btn=$('loginBtn');
- const userValue=userEl?userEl.value.trim():'';
- const password=pwEl?pwEl.value:'';
+ const userValue=$('user')?$('user').value.trim():'';
+ const password=$('pw')?$('pw').value:'';
+ const btn=$('loginBtn');
 
- if(!userValue||!password){
-   setStatus('Enter Admin ID and password.');
-   return;
- }
+ if(!userValue||!password){setStatus('Enter Admin ID and password.');return}
 
  setStatus('Checking login...');
  if(btn)btn.disabled=true;
 
  try{
    const r=await post({action:'adminLogin',user:userValue,password});
-   const newToken=r&&r.data&&r.data.token?r.data.token:'';
-   if(!newToken)throw new Error('No admin session received.');
-
-   token=newToken;
+   token=r.data&&r.data.token?r.data.token:'';
+   if(!token)throw new Error('No admin session received.');
    localStorage.setItem(TOKEN_KEY,token);
-   if(pwEl)pwEl.value='';
+   if($('pw'))$('pw').value='';
    setStatus('');
    showDashboard();
  }catch(e){
@@ -247,26 +401,17 @@ async function doLogin(){
  }
 }
 
+function setStatus(msg){if($('status'))$('status').textContent=msg||''}
+
 async function restoreSession(){
  applyTheme();
  token=localStorage.getItem(TOKEN_KEY)||'';
-
- if(!token){
-   showLogin();
-   return;
- }
-
- setStatus('Restoring session...');
-
+ if(!token){showLogin();return}
  try{
    await post({action:'adminData',section:'adminNotifications',token});
-   setStatus('');
    showDashboard();
  }catch(e){
-   token='';
-   localStorage.removeItem(TOKEN_KEY);
-   setStatus('');
-   showLogin();
+   token='';localStorage.removeItem(TOKEN_KEY);showLogin();
  }
 }
 
@@ -276,22 +421,37 @@ function logout(){
  location.reload();
 }
 
+/* compact menu */
+function toggleMenu(){$('saMenu').classList.toggle('active')}
+function closeMenu(){$('saMenu').classList.remove('active')}
+
+/* theme */
+function applyTheme(){
+ const th=localStorage.getItem('scSuperTheme')||'light';
+ document.documentElement.classList.toggle('dark',th==='dark');
+ if($('menuThemeText'))$('menuThemeText').textContent=th==='dark'?'Switch to Light':'Switch to Dark';
+}
+function toggleTheme(){
+ const th=localStorage.getItem('scSuperTheme')||'light';
+ localStorage.setItem('scSuperTheme',th==='dark'?'light':'dark');
+ applyTheme();
+ closeMenu();
+}
+
+/* modules */
 function showModules(){
- const panel=$('panel'),mods=$('modules');
- if(panel)panel.classList.remove('active');
- if(mods)mods.style.display='grid';
+ if($('panel'))$('panel').classList.remove('active');
+ if($('modules'))$('modules').style.display='grid';
  section='';
 }
 
 async function openSection(s){
  if(!token)return;
  section=s;
-
- const mods=$('modules'),panel=$('panel'),title=$('panelTitle'),content=$('content');
- if(mods)mods.style.display='none';
- if(panel)panel.classList.add('active');
- if(title)title.textContent=(SECTIONS.find(x=>x[0]===s)||['','','Management'])[2];
- if(content){content.className='empty';content.textContent='Loading...';}
+ if($('modules'))$('modules').style.display='none';
+ if($('panel'))$('panel').classList.add('active');
+ if($('panelTitle'))$('panelTitle').textContent=(SECTIONS.find(x=>x[0]===s)||['','','Management'])[2];
+ if($('content')){$('content').className='empty';$('content').textContent='Loading...';}
 
  try{
    const r=await post({action:'adminData',section:s,token});
@@ -305,27 +465,25 @@ async function openSection(s){
 function handleSessionError(e){
  const msg=String(e&&e.message||'');
  if(/session|token|login|expired|unauthor/i.test(msg)){
-   token='';
-   localStorage.removeItem(TOKEN_KEY);
-   alert('Your Super Admin session has expired. Please login again.');
-   location.reload();
+   token='';localStorage.removeItem(TOKEN_KEY);
+   toast('Session expired. Please login again.','error');
+   setTimeout(()=>location.reload(),900);
  }else{
-   const content=$('content');
-   if(content){
-     content.className='empty';
-     content.textContent=msg||'Unable to load data.';
-   }
+   if($('content')){$('content').className='empty';$('content').textContent=msg||'Unable to load data.';}
  }
 }
 
 function idOf(r){
  return r.ID||r['User ID']||r.id||r.Key||r.KEY||'';
 }
+function isPendingRequest(r){
+ const id=String(idOf(r)||'').toUpperCase();
+ return r._source==='registration' || id.startsWith('BR') || id.startsWith('SR') || id.startsWith('CMR');
+}
 
 function render(){
  const content=$('content');
  if(!content)return;
-
  if(!rows.length){
    content.className='empty';
    content.textContent='No records found.';
@@ -338,10 +496,12 @@ function render(){
    '<th>Actions</th></tr></thead><tbody>';
 
  rows.forEach((r,i)=>{
+   const req=isPendingRequest(r);
    h+='<tr>'+
      cols.map(c=>'<td title="'+esc(r[c])+'">'+esc(r[c])+'</td>').join('')+
      '<td><div class="rowbtns">'+
-     '<button style="background:#eaf7ed;color:#176b35" onclick="openEditor('+i+')">Edit</button>'+
+     (req?'<button style="background:#eaf7ed;color:#176b35" onclick="approveRow('+i+')">Approve</button><button style="background:#fff0dd;color:#b45309" onclick="rejectRow('+i+')">Reject</button>':'')+
+     '<button style="background:#eef4ff;color:#1d4ed8" onclick="openEditor('+i+')">Edit</button>'+
      '<button style="background:#fff1f1;color:#b91c1c" onclick="removeRow('+i+')">Delete</button>'+
      '</div></td></tr>';
  });
@@ -351,6 +511,44 @@ function render(){
  content.innerHTML=h;
 }
 
+async function approveRow(i){
+ const r=rows[i];
+ const ok=await askConfirm('Approve Request','Approve and publish this request?','Approve');
+ if(!ok)return;
+ try{
+   const res=await post({action:'adminUpdate',section,operation:'approve',id:idOf(r),token});
+   toast((res.data&&res.data.message)||'Approved successfully.');
+   await openSection(section);
+   checkSuperNotifications();
+ }catch(e){toast(e.message,'error')}
+}
+
+async function rejectRow(i){
+ const r=rows[i];
+ const ok=await askConfirm('Reject Request','Reject this request? The pending request will be removed.','Reject');
+ if(!ok)return;
+ try{
+   const res=await post({action:'adminUpdate',section,operation:'reject',id:idOf(r),token});
+   toast((res.data&&res.data.message)||'Rejected successfully.');
+   await openSection(section);
+   checkSuperNotifications();
+ }catch(e){toast(e.message,'error')}
+}
+
+/* editor */
+function inputForColumn(c,v){
+ const opts=FIXED_OPTIONS[c];
+ if(opts){
+   const selected=String(v||'');
+   return `<select name="${esc(c)}">${opts.map(o=>`<option ${selected===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+ }
+ const lower=String(c).toLowerCase();
+ if(/date/.test(lower)) return `<input type="date" name="${esc(c)}" value="${esc(v)}">`;
+ if(/time/.test(lower)) return `<input type="time" name="${esc(c)}" value="${esc(v)}">`;
+ if(/description|message|details|address|summary|content|note/.test(lower)) return `<textarea name="${esc(c)}">${esc(v)}</textarea>`;
+ return `<input name="${esc(c)}" value="${esc(v)}">`;
+}
+
 function openEditor(i){
  editing=i===null?null:rows[i];
  const obj=editing||rows[0]||{};
@@ -358,20 +556,17 @@ function openEditor(i){
    !String(c).startsWith('_') &&
    !['Password Salt','Password Hash'].includes(c)
  );
-
  $('editorTitle').textContent=editing?'Edit Record':'Add Record';
 
- $('editorForm').innerHTML=cols.map(c=>{
-   const v=editing?editing[c]:'';
-   const full=/description|message|details|address/i.test(c);
-   return `<div class="ef ${full?'full':''}">
-     <label>${esc(c)}</label>
-     ${full
-       ? `<textarea name="${esc(c)}">${esc(v)}</textarea>`
-       : `<input name="${esc(c)}" value="${esc(v)}">`}
-   </div>`;
- }).join('')+'<button class="save">Save</button>';
-
+ if(!cols.length && !editing){
+   $('editorForm').innerHTML='<div class="ef full"><label>Name / Title</label><input name="Title"></div><div class="ef full"><label>Description</label><textarea name="Description"></textarea></div><button class="save">Add Record</button>';
+ }else{
+   $('editorForm').innerHTML=cols.map(c=>{
+     const v=editing?editing[c]:'';
+     const full=/description|message|details|address|summary|content|note/i.test(c);
+     return `<div class="ef ${full?'full':''}"><label>${esc(c)}</label>${inputForColumn(c,v)}</div>`;
+   }).join('')+'<button class="save">'+(editing?'Save Changes':'Add Record')+'</button>';
+ }
  $('editorModal').classList.add('active');
 }
 
@@ -380,8 +575,8 @@ async function saveEditor(e){
 
  const ok=await askConfirm(
    editing?'Save Changes':'Add Record',
-   editing?'Save the changes to this record?':'Add this new record?',
-   editing?'Save Changes':'Add Record'
+   editing?'Save these changes?':'Add this new record?',
+   editing?'Save':'Add'
  );
  if(!ok)return false;
 
@@ -389,7 +584,7 @@ async function saveEditor(e){
  new FormData($('editorForm')).forEach((v,k)=>data[k]=v);
 
  try{
-   await post({
+   const res=await post({
      action:'adminSave',
      section,
      operation:editing?'edit':'add',
@@ -398,11 +593,11 @@ async function saveEditor(e){
      token
    });
    $('editorModal').classList.remove('active');
-   openSection(section);
+   toast((res.data&&res.data.message)||(editing?'Changes saved successfully.':'Saved successfully.'));
+   await openSection(section);
  }catch(e){
-   alert(e.message);
+   toast(e.message,'error');
  }
-
  return false;
 }
 
@@ -415,51 +610,33 @@ async function removeRow(i){
  if(!ok)return;
 
  try{
-   await post({
-     action:'adminUpdate',
-     section,
-     operation:'delete',
-     id:idOf(rows[i]),
-     token
-   });
-   openSection(section);
- }catch(e){
-   alert(e.message);
- }
+   const res=await post({action:'adminUpdate',section,operation:'delete',id:idOf(rows[i]),token});
+   toast((res.data&&res.data.message)||'Deleted successfully.');
+   await openSection(section);
+ }catch(e){toast(e.message,'error')}
 }
 
+/* staff admin */
 function createStaff(){
  $('staffForm').reset();
  $('staffModal').classList.add('active');
 }
-
 async function saveStaff(e){
  e.preventDefault();
-
- const ok=await askConfirm(
-   'Create Staff Admin',
-   'Create this staff admin account with the entered details?',
-   'Create Admin'
- );
+ const ok=await askConfirm('Create Staff Admin','Create this staff admin account?','Create Admin');
  if(!ok)return false;
-
  const d={action:'superAdminCreateStaff',token};
  new FormData($('staffForm')).forEach((v,k)=>d[k]=v);
-
  try{
    const r=await post(d);
    $('staffModal').classList.remove('active');
-   alert(r.data.message);
-   checkSuperNotifications();
- }catch(e){
-   alert(e.message);
- }
-
+   toast((r.data&&r.data.message)||'Admin created successfully.');
+ }catch(e){toast(e.message,'error')}
  return false;
 }
-
 async function loadStaff(){
- $('modules').style.display='none';
+ closeMenu();
+ if($('modules'))$('modules').style.display='none';
  $('panel').classList.add('active');
  $('panelTitle').textContent='Staff Admins';
  $('content').className='empty';
@@ -468,175 +645,107 @@ async function loadStaff(){
  try{
    const r=await post({action:'superAdminListStaff',token});
    rows=r.data||[];
-
-   if(!rows.length){
-     $('content').className='empty';
-     $('content').textContent='No staff admins found.';
-     return;
-   }
-
-   let h='<div class="tablewrap"><table><thead><tr>'+
-     '<th>Name</th><th>Mobile</th><th>Email</th><th>Ward</th><th>Status</th><th>Action</th>'+
-     '</tr></thead><tbody>';
-
+   if(!rows.length){$('content').textContent='No staff admins found.';return}
+   let h='<div class="tablewrap"><table><thead><tr><th>Name</th><th>Mobile</th><th>Email</th><th>Ward</th><th>Status</th><th>Action</th></tr></thead><tbody>';
    rows.forEach((a,i)=>{
-     h+=`<tr>
-       <td>${esc(a.name)}</td>
-       <td>${esc(a.mobile)}</td>
-       <td>${esc(a.email)}</td>
-       <td>${esc(a.ward)}</td>
-       <td>${esc(a.status)}</td>
-       <td><button onclick="toggleStaff(${i})">${a.status==='Active'?'Disable':'Enable'}</button></td>
-     </tr>`;
+     h+=`<tr><td>${esc(a.name)}</td><td>${esc(a.mobile)}</td><td>${esc(a.email)}</td><td>${esc(a.ward)}</td><td>${esc(a.status)}</td><td><button onclick="toggleStaff(${i})">${a.status==='Active'?'Disable':'Enable'}</button></td></tr>`;
    });
-
    h+='</tbody></table></div>';
    $('content').className='';
    $('content').innerHTML=h;
- }catch(e){
-   handleSessionError(e);
- }
+ }catch(e){handleSessionError(e)}
 }
-
 async function toggleStaff(i){
  const a=rows[i];
  const nextStatus=a.status==='Active'?'Disabled':'Active';
-
- const ok=await askConfirm(
-   nextStatus+' Admin',
-   nextStatus+' '+a.name+'?',
-   nextStatus
- );
+ const ok=await askConfirm(nextStatus+' Admin',nextStatus+' '+a.name+'?',nextStatus);
  if(!ok)return;
-
  try{
-   await post({
-     action:'superAdminSetStaffStatus',
-     token,
-     id:a.id,
-     status:nextStatus
-   });
+   const r=await post({action:'superAdminSetStaffStatus',token,id:a.id,status:nextStatus});
+   toast((r.data&&r.data.message)||'Admin updated successfully.');
    loadStaff();
- }catch(e){
-   alert(e.message);
- }
+ }catch(e){toast(e.message,'error')}
 }
 
-/* Theme */
-function applyTheme(){
- const th=localStorage.getItem('scSuperTheme')||'light';
- document.documentElement.classList.toggle('dark',th==='dark');
- const b=$('themeBtn');
- if(b)b.textContent=th==='dark'?'☀️ Light':'🌙 Dark';
-}
-function toggleTheme(){
- const th=localStorage.getItem('scSuperTheme')||'light';
- localStorage.setItem('scSuperTheme',th==='dark'?'light':'dark');
- applyTheme();
-}
-
-/* Password */
+/* password */
 function togglePasswordBox(){
+ closeMenu();
  $('pwBox').classList.toggle('active');
 }
 function togglePw(id,b){
- const e=$(id);
- if(!e)return;
+ const e=$(id);if(!e)return;
  const show=e.type==='password';
  e.type=show?'text':'password';
  if(b)b.textContent=show?'Hide':'Show';
 }
 async function changeSuperPassword(){
- if(!token){alert('Please login first.');return}
-
+ if(!token){toast('Please login first.','error');return}
  const current=$('currentPassword').value;
  const next=$('newPassword').value;
  const confirmNext=$('confirmPassword').value;
 
- if(!current||!next||!confirmNext){
-   alert('Complete all password fields.');
-   return;
- }
- if(next.length<6){
-   alert('New password must contain at least 6 characters.');
-   return;
- }
- if(next!==confirmNext){
-   alert('New passwords do not match.');
-   return;
- }
+ if(!current||!next||!confirmNext){toast('Complete all password fields.','error');return}
+ if(next.length<6){toast('New password must contain at least 6 characters.','error');return}
+ if(next!==confirmNext){toast('New passwords do not match.','error');return}
 
- const ok=await askConfirm(
-   'Change Password',
-   'Change the Super Admin password?',
-   'Change Password'
- );
+ const ok=await askConfirm('Change Password','Change the Super Admin password?','Change Password');
  if(!ok)return;
 
  try{
-   const r=await post({
-     action:'adminChangePassword',
-     token,
-     currentPassword:current,
-     newPassword:next
-   });
-
-   $('currentPassword').value='';
-   $('newPassword').value='';
-   $('confirmPassword').value='';
+   const r=await post({action:'adminChangePassword',token,currentPassword:current,newPassword:next});
+   $('currentPassword').value='';$('newPassword').value='';$('confirmPassword').value='';
    $('pwBox').classList.remove('active');
-   alert((r.data&&r.data.message)||'Password updated successfully.');
- }catch(e){
-   alert(e.message);
- }
+   toast((r.data&&r.data.message)||'Password updated successfully.');
+ }catch(e){toast(e.message,'error')}
 }
 
-/* Confirmation */
+/* confirmations */
 function askConfirm(title,text,buttonText){
  $('confirmTitle').textContent=title||'Confirm Action';
  $('confirmText').textContent=text||'Are you sure?';
  $('confirmYes').textContent=buttonText||'Confirm';
  $('confirmModal').classList.add('active');
-
- return new Promise(resolve=>{
-   scConfirmResolve=resolve;
- });
+ return new Promise(resolve=>{scConfirmResolve=resolve});
 }
-function resolveConfirm(value){
+function resolveConfirm(v){
  $('confirmModal').classList.remove('active');
- if(scConfirmResolve){
-   const r=scConfirmResolve;
-   scConfirmResolve=null;
-   r(value);
- }
+ if(scConfirmResolve){const r=scConfirmResolve;scConfirmResolve=null;r(v)}
 }
 
-/* Private notifications */
+/* notifications */
 function notificationKey(n){
- return 'scSuperSeen:'+String(
-   n.ID||n.id||n.Title||n['Request ID']||JSON.stringify(n)
- );
+ return 'scSuperSeen:'+String(n.ID||n.id||n.Title||n['Request ID']||JSON.stringify(n));
 }
 function renderSuperBell(){
  const unseen=superNotifications.some(n=>!localStorage.getItem(notificationKey(n)));
- const dot=$('superBellDot');
- if(dot)dot.style.display=unseen?'block':'none';
+ if($('superBellDot'))$('superBellDot').style.display=unseen?'block':'none';
+}
+function requestSectionFromNotification(n){
+ const type=String(n['Request Type']||n.Type||n.Title||'').toLowerCase();
+ if(type.includes('change')||type.includes('join'))return 'changeMakers';
+ if(type.includes('service'))return 'services';
+ if(type.includes('business'))return 'businesses';
+ return '';
 }
 async function checkSuperNotifications(){
  if(!token)return;
  try{
-   const r=await post({
-     action:'adminData',
-     section:'adminNotifications',
-     token
-   });
+   const r=await post({action:'adminData',section:'adminNotifications',token});
    superNotifications=Array.isArray(r.data)?r.data:[];
    renderSuperBell();
+
+   const unseen=superNotifications.filter(n=>!localStorage.getItem(notificationKey(n)));
+   latestNotification=unseen.length?unseen[unseen.length-1]:null;
+   if(latestNotification){
+     $('homeNotifyTitle').textContent=latestNotification.Title||latestNotification['Request Type']||'New request';
+     $('homeNotifyMessage').textContent=latestNotification.Message||latestNotification['Request ID']||'New administrative request received.';
+     $('homeNotificationCard').classList.add('show');
+   }
  }catch(e){}
 }
+function hideHomeNotification(){$('homeNotificationCard').classList.remove('show')}
 function openSuperNotifications(){
  if(!token)return;
-
  $('notificationModal').classList.add('active');
  const box=$('notificationList');
 
@@ -645,31 +754,90 @@ function openSuperNotifications(){
    box.textContent='No new requests or administrative updates.';
  }else{
    box.className='';
-   box.innerHTML=superNotifications.slice().reverse().map(n=>{
+   box.innerHTML=superNotifications.slice().reverse().map((n,i)=>{
      const title=n.Title||n['Request Type']||'Update';
      const msg=n.Message||n['Request ID']||'New administrative update';
-     const date=n['Created At']||'';
-     return `<div style="padding:11px;border-bottom:1px solid var(--border)">
-       <b style="font-size:10px">${esc(title)}</b>
-       <div style="font-size:8px;color:var(--muted);margin-top:4px">${esc(msg)}</div>
-       ${date?`<div style="font-size:7px;color:var(--muted);margin-top:3px">${esc(date)}</div>`:''}
-     </div>`;
+     return `<button style="width:100%;border:0;background:transparent;text-align:left;padding:11px;border-bottom:1px solid var(--border)" onclick="openNotificationByIndex(${superNotifications.length-1-i})"><b style="font-size:10px">${esc(title)}</b><div style="font-size:8px;color:var(--muted);margin-top:4px">${esc(msg)}</div></button>`;
    }).join('');
  }
-
- superNotifications.forEach(n=>localStorage.setItem(notificationKey(n),'1'));
+}
+function openNotificationByIndex(i){
+ const n=superNotifications[i];
+ if(!n)return;
+ localStorage.setItem(notificationKey(n),'1');
  renderSuperBell();
+ $('notificationModal').classList.remove('active');
+ openNotificationDetail(n);
+}
+function openLatestNotification(){
+ if(!latestNotification)return;
+ localStorage.setItem(notificationKey(latestNotification),'1');
+ renderSuperBell();
+ hideHomeNotification();
+ openNotificationDetail(latestNotification);
+}
+async function openNotificationDetail(n){
+ const sec=requestSectionFromNotification(n);
+ const reqId=String(n['Request ID']||'');
+ if(!sec){
+   $('requestDetailTitle').textContent=n.Title||'Notification';
+   $('requestDetailBody').innerHTML=`<div class="detail-item"><small>Message</small><b>${esc(n.Message||'')}</b></div>`;
+   $('requestDetailModal').classList.add('active');
+   return;
+ }
+
+ try{
+   const r=await post({action:'adminData',section:sec,token});
+   const list=Array.isArray(r.data)?r.data:[];
+   const rec=list.find(x=>String(idOf(x))===reqId) || list.find(x=>isPendingRequest(x));
+   if(!rec)throw new Error('Request details are no longer available.');
+   currentRequestDetail={section:sec,record:rec};
+
+   $('requestDetailTitle').textContent=n.Title||'Request Details';
+   const items=Object.keys(rec).filter(k=>!String(k).startsWith('_')).map(k=>`<div class="detail-item"><small>${esc(k)}</small><b>${esc(rec[k])}</b></div>`).join('');
+   $('requestDetailBody').innerHTML=`<div class="detail-grid">${items}</div><div class="detail-actions"><button style="background:#eaf7ed;color:#176b35" onclick="detailDecision('approve')">Approve</button><button style="background:#fff1f1;color:#b91c1c" onclick="detailDecision('reject')">Reject</button></div>`;
+   $('requestDetailModal').classList.add('active');
+ }catch(e){
+   toast(e.message,'error');
+ }
+}
+async function detailDecision(op){
+ if(!currentRequestDetail)return;
+ const ok=await askConfirm(op==='approve'?'Approve Request':'Reject Request',op==='approve'?'Approve and publish this request?':'Reject and remove this request?',op==='approve'?'Approve':'Reject');
+ if(!ok)return;
+
+ try{
+   const res=await post({
+     action:'adminUpdate',
+     section:currentRequestDetail.section,
+     operation:op,
+     id:idOf(currentRequestDetail.record),
+     token
+   });
+   $('requestDetailModal').classList.remove('active');
+   currentRequestDetail=null;
+   toast((res.data&&res.data.message)||(op==='approve'?'Approved successfully.':'Rejected successfully.'));
+   await checkSuperNotifications();
+ }catch(e){toast(e.message,'error')}
 }
 
-/* Boot */
+/* boot */
 document.addEventListener('DOMContentLoaded',()=>{
  const loginBtn=$('loginBtn');
  const loginPwToggle=$('loginPwToggle');
  const pwEl=$('pw');
+ const menuBtn=$('menuBtn');
+ const bell=$('superBell');
 
  if(loginBtn)loginBtn.addEventListener('click',doLogin);
  if(loginPwToggle)loginPwToggle.addEventListener('click',()=>togglePw('pw',loginPwToggle));
  if(pwEl)pwEl.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+ if(menuBtn)menuBtn.addEventListener('click',toggleMenu);
+ if(bell)bell.addEventListener('click',openSuperNotifications);
+
+ document.addEventListener('click',e=>{
+   if($('saMenu') && $('saMenu').classList.contains('active') && !e.target.closest('#saMenu') && !e.target.closest('#menuBtn')) closeMenu();
+ });
 
  restoreSession();
 });
