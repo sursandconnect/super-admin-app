@@ -326,8 +326,6 @@ function openNotice(){
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-  try{const cached=localStorage.getItem('scAdminDashboardCache');if(cached){const c=JSON.parse(cached);if(c&&c.summary)renderModules(c.summary)}}catch(e){}
-
   const bell=$('bell');
   const menuBtn=$('menuBtn');
   const pwToggle=$('pwToggle');
@@ -382,4 +380,19 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   restore();
 });
-</script></div></body></html>
+</script></div>
+<script>
+(function scFastAdminHomeV12(){
+  const token=localStorage.getItem("scSuperAdminToken");
+  if(!token)return;
+  // Module cards are static and should not wait for network data.
+  try{
+    const grid=document.getElementById("grid");
+    if(grid && typeof renderModules==="function" && !grid.children.length){
+      renderModules();
+      grid.style.display="grid";
+    }
+  }catch(e){}
+})();
+</script>
+</body></html>
